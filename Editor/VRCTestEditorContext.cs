@@ -31,9 +31,12 @@ public static class VRCTestEditorContext {
 		EnvConfig.SetVRSDKs(new string[] {"None", "OpenVR", "Oculus"});
 	}
 
-	[MenuItem("GameObject/VRCTest/Start Testing", false, -10)]
+	[MenuItem("GameObject/VRCTest/Start Testing & T", false, -10)]
 	public static void StartTesting (MenuCommand mc) {
 		var go = (GameObject)mc.context;
+		if (go == null) {
+			go = Selection.activeGameObject;
+		}
 		
 		if (go.GetComponent<VRC_AvatarDescriptor>() != null) {
 			HandleAvatar(go);

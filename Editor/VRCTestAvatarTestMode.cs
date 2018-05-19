@@ -12,6 +12,7 @@ public class VRCTestAvatarTestMode {
     private static Scene originalActiveScene;
     private static Scene testScene;
     private static List<Scene> loadedScenes;
+    private static GameObject goSafeCopy;
     
 
     private static void GetAllScenes(out List<Scene> scenes) {
@@ -51,7 +52,13 @@ public class VRCTestAvatarTestMode {
         }
 
         goClone.tag = "Player";
+        goSafeCopy = goClone;
+        goSafeCopy.SetActive(false);
 
+        var player = new GameObject("Player");
+        var pctrl = player.AddComponent<VRCTPlayerController>();
+        pctrl.m_Avatar = goSafeCopy;
+        SceneManager.MoveGameObjectToScene(player, testScene);
     }
 
     public static void EndTest() {
