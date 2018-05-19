@@ -6,6 +6,8 @@ public class VRCTPlayerController : MonoBehaviour {
 
     public GameObject m_CameraRig;
 
+    public Transform CameraScaler;
+
     public float m_HeadPopinDistance = 1;
 
     private GameObject Primary;
@@ -44,11 +46,28 @@ public class VRCTPlayerController : MonoBehaviour {
     }
 
     private void SetupCamera() {
-        m_CameraRig.transform.position = Descriptor.ViewPosition;
         var oldRig = m_CameraRig;
-        m_CameraRig = GameObject.Instantiate(m_CameraRig, transform, true);
+        
+        CameraScaler = new GameObject("Camera Scaler").transform;
+        CameraScaler.parent = transform;
+        CameraScaler.position = Descriptor.ViewPosition;
+
+        m_CameraRig = GameObject.Instantiate(m_CameraRig, CameraScaler, true);
         m_CameraRig.name = "Player Camera";
+        m_CameraRig.transform.position = Vector3.zero;
         oldRig.SetActive(false);
+
+        if (Descriptor.ScaleIPD) {
+            ScaleIPD();
+        }
+    }
+
+    private void ScaleIPD() {
+        var leftEye = PrimaryHeadTransform.Find("LeftEye");
+        var rightEye = PrimaryHeadTransform.Find("RightEye");
+
+        var d = Vector3.Distance(leftEye.position, rightEye.position) * 12F;
+        CameraScaler.localScale -= new Vector3(d, d, d);
     }
 
     private void SetupShadow() {
